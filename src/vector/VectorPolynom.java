@@ -17,7 +17,7 @@ public class VectorPolynom implements Vector {
 		} catch (ClassCastException e) {
 			throw new IllegalArgumentException("An Error occured. It´s probably located between chair and keyboard.");
 		}
-		if(this.gerGrad() > vp.gerGrad()) {
+		if(this.getGrad() > vp.getGrad()) {
 			ret = new VectorPolynom(koeffizienten);
 			for(int i = 0; i < vp.koeffizienten.length; i++){
 				ret.koeffizienten[i] += vp.koeffizienten[i];
@@ -42,7 +42,6 @@ public class VectorPolynom implements Vector {
 
 	@Override
 	public double scalarProd(Vector v2) {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
@@ -64,8 +63,24 @@ public class VectorPolynom implements Vector {
 		return null;
 	}
 	
-	public int gerGrad(){
+	public int getGrad(){
 		return koeffizienten.length - 1;
+	}
+	
+	private double getIntegral(){
+		double ret = 0;
+		for(double i = -1; i < 1; i += 0.1){
+			ret += 0.1 * this.getValueAt(i);
+		}
+		return ret;
+	}
+	
+	public double getValueAt(double x){
+		double ret = 0;
+		for(int i = 0; i < koeffizienten.length; i++){
+			ret += koeffizienten[i]*Math.pow(x, i);
+		}
+		return ret;
 	}
 
 }
