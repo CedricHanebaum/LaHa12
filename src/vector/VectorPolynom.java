@@ -44,19 +44,21 @@ public class VectorPolynom implements Vector {
 
 	@Override
 	public Vector mult(double d) {
-		double k[] = koeffizienten;
+		VectorPolynom ret = new VectorPolynom(this);
 		
-		for (int i = 0; i < koeffizienten.length; i++) {
-			k[i] *= d;
+		for (int i = 0; i < ret.koeffizienten.length; i++) {
+			ret.koeffizienten[i] *= d;
 		}
 		
-		return new VectorPolynom(k);
+		return ret;
 	}
 
 	@Override
 	public double scalarProd(Vector v2) {
 		try {
-			return this.getMultIntegral(-1, 1, (VectorPolynom) v2);
+//			return this.getMultIntegral(-1, 1, (VectorPolynom) v2);
+			VectorPolynom v = this.multPolynom((VectorPolynom) v2);
+			return v.integrate(-1, 1);
 		} catch (ClassCastException e) {
 			throw new IllegalArgumentException("An Error occured. It´s probably located between chair and keyboard.");
 		}
@@ -76,37 +78,36 @@ public class VectorPolynom implements Vector {
 	public Vector projeziereV1AufV2(Vector v2) {
 		return v2.mult(this.scalarProd(v2) / v2.scalarProd(v2));
 	}
+	
+	public VectorPolynom multPolynom(VectorPolynom v2){
+		VectorPolynom ret = new VectorPolynom(new double[this.koeffizienten.length + v2.koeffizienten.length - 1]);
+		
+		for(int i = 0; i < this.koeffizienten.length; i++){
+			for(int j = 0; j < v2.koeffizienten.length; j++){
+				ret.koeffizienten[i + j] += this.koeffizienten[i] * v2.koeffizienten[j];
+			}
+		}
+		
+		return ret;
+	}
 
 	public int getGrad() {
 		return koeffizienten.length - 1;
 	}
 
-	public double getMultIntegral(double x, double y, VectorPolynom v2) {
-		double left = 0;
-		double right = 0;
+	public VectorPolynom getIntegral() {
+		VectorPolynom ret = new VectorPolynom(new double[this.koeffizienten.length + 1]);
 		
-		for (double i = x; i < y; i += ACC) {
-			left += ACC * (this.getValueAt(i) * v2.getValueAt(i));
+		for(int i = 0; i < this.koeffizienten.length; i++){
+			ret.koeffizienten[i + 1] = this.koeffizienten[i] /(i + 1);
 		}
-		for (double i = x + ACC; i <= y; i += ACC) {
-			right += ACC * (this.getValueAt(i) * v2.getValueAt(i));
-		}
-
-		return (left + right) / 2;
+		
+		return ret;
 	}
-
-	public double getIntegral(double x, double y) {
-		double left = 0;
-		double right = 0;
-		
-		for (double i = x; i < y; i += ACC) {
-			left += ACC * this.getValueAt(i);
-		}
-		for (double i = x + ACC; i <= y; i += ACC) {
-			right += ACC * this.getValueAt(i);
-		}
-
-		return (left + right) / 2;
+	
+	public double integrate(double x, double y){
+		if(x >= y) throw new IllegalArgumentException("An Error occured. It´s probably located between chair and keyboard.");
+		return this.getIntegral().getValueAt(y) - this.getIntegral().getValueAt(x);
 	}
 
 	public double getValueAt(double x) {
