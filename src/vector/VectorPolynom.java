@@ -2,41 +2,54 @@ package vector;
 
 public class VectorPolynom implements Vector {
 
+	
+	public static final double ACC = 0.0001;
 	private double[] koeffizienten;
 
 	public VectorPolynom(double... koeffizienten) {
 		this.koeffizienten = koeffizienten;
+	}
+	
+	public VectorPolynom(VectorPolynom v2){
+		this.koeffizienten = new double[v2.koeffizienten.length];
+		for(int i = 0; i < v2.koeffizienten.length; i++){
+			this.koeffizienten[i] = v2.koeffizienten[i];
+		}
 	}
 
 	@Override
 	public Vector add(Vector v2) {
 		VectorPolynom vp;
 		VectorPolynom ret;
+		
 		try {
 			vp = (VectorPolynom) v2;
 		} catch (ClassCastException e) {
 			throw new IllegalArgumentException("An Error occured. It´s probably located between chair and keyboard.");
 		}
 		if (this.getGrad() > vp.getGrad()) {
-			ret = new VectorPolynom(new double[koeffizienten.length]);
+			ret = new VectorPolynom(this);
 			for (int i = 0; i < vp.koeffizienten.length; i++) {
 				ret.koeffizienten[i] += vp.koeffizienten[i];
 			}
 		} else {
-			ret = new VectorPolynom(new double[vp.koeffizienten.length]);
+			ret = new VectorPolynom(vp);
 			for (int i = 0; i < this.koeffizienten.length; i++) {
 				ret.koeffizienten[i] += this.koeffizienten[i];
 			}
 		}
+		
 		return ret;
 	}
 
 	@Override
 	public Vector mult(double d) {
 		double k[] = koeffizienten;
+		
 		for (int i = 0; i < koeffizienten.length; i++) {
 			k[i] *= d;
 		}
+		
 		return new VectorPolynom(k);
 	}
 
@@ -69,13 +82,12 @@ public class VectorPolynom implements Vector {
 	}
 
 	public double getMultIntegral(double x, double y, VectorPolynom v2) {
-		double ACC = 0.0001;
 		double left = 0;
 		double right = 0;
+		
 		for (double i = x; i < y; i += ACC) {
 			left += ACC * (this.getValueAt(i) * v2.getValueAt(i));
 		}
-
 		for (double i = x + ACC; i <= y; i += ACC) {
 			right += ACC * (this.getValueAt(i) * v2.getValueAt(i));
 		}
@@ -84,13 +96,12 @@ public class VectorPolynom implements Vector {
 	}
 
 	public double getIntegral(double x, double y) {
-		double ACC = 0.0001;
 		double left = 0;
 		double right = 0;
+		
 		for (double i = x; i < y; i += ACC) {
 			left += ACC * this.getValueAt(i);
 		}
-
 		for (double i = x + ACC; i <= y; i += ACC) {
 			right += ACC * this.getValueAt(i);
 		}
@@ -100,17 +111,21 @@ public class VectorPolynom implements Vector {
 
 	public double getValueAt(double x) {
 		double ret = 0;
+		
 		for (int i = 0; i < koeffizienten.length; i++) {
 			ret += koeffizienten[i] * Math.pow(x, i);
 		}
+		
 		return ret;
 	}
 
 	public String toString() {
 		String ret = "";
+		
 		for (int i = koeffizienten.length - 1; i >= 0; i--) {
 			ret += " + " + koeffizienten[i] + "x^" + i;
 		}
+		
 		return ret;
 	}
 
