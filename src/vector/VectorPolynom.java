@@ -1,15 +1,13 @@
 package vector;
 
 public class VectorPolynom implements Vector {
-	
+
 	private double[] koeffizienten;
-	
-	public VectorPolynom(double... koeffizienten){
+
+	public VectorPolynom(double... koeffizienten) {
 		this.koeffizienten = koeffizienten;
 	}
 
-	
-	//FIXME this objekt wird verändert
 	@Override
 	public Vector add(Vector v2) {
 		VectorPolynom vp;
@@ -19,14 +17,14 @@ public class VectorPolynom implements Vector {
 		} catch (ClassCastException e) {
 			throw new IllegalArgumentException("An Error occured. It´s probably located between chair and keyboard.");
 		}
-		if(this.getGrad() > vp.getGrad()) {
-			ret = new VectorPolynom(koeffizienten);
-			for(int i = 0; i < vp.koeffizienten.length; i++){
+		if (this.getGrad() > vp.getGrad()) {
+			ret = new VectorPolynom(new double[koeffizienten.length]);
+			for (int i = 0; i < vp.koeffizienten.length; i++) {
 				ret.koeffizienten[i] += vp.koeffizienten[i];
 			}
 		} else {
-			ret = new VectorPolynom(vp.koeffizienten);
-			for(int i = 0; i < this.koeffizienten.length; i++){
+			ret = new VectorPolynom(new double[vp.koeffizienten.length]);
+			for (int i = 0; i < this.koeffizienten.length; i++) {
 				ret.koeffizienten[i] += this.koeffizienten[i];
 			}
 		}
@@ -45,8 +43,8 @@ public class VectorPolynom implements Vector {
 	@Override
 	public double scalarProd(Vector v2) {
 		try {
-			return this.getMultIntegral((VectorPolynom) v2);
-		} catch (ClassCastException e){
+			return this.getMultIntegral(-1, 1, (VectorPolynom) v2);
+		} catch (ClassCastException e) {
 			throw new IllegalArgumentException("An Error occured. It´s probably located between chair and keyboard.");
 		}
 	}
@@ -65,39 +63,52 @@ public class VectorPolynom implements Vector {
 	public Vector projeziereV1AufV2(Vector v2) {
 		return v2.mult(this.scalarProd(v2) / v2.scalarProd(v2));
 	}
-	
-	public int getGrad(){
+
+	public int getGrad() {
 		return koeffizienten.length - 1;
 	}
-	
-	private double getMultIntegral(VectorPolynom v2){
+
+	public double getMultIntegral(double x, double y, VectorPolynom v2) {
+		double ACC = 0.0001;
+		double left = 0;
+		double right = 0;
+		for (double i = x; i < y; i += ACC) {
+			left += ACC * (this.getValueAt(i) * v2.getValueAt(i));
+		}
+
+		for (double i = x + ACC; i <= y; i += ACC) {
+			right += ACC * (this.getValueAt(i) * v2.getValueAt(i));
+		}
+
+		return (left + right) / 2;
+	}
+
+	public double getIntegral(double x, double y) {
+		double ACC = 0.0001;
+		double left = 0;
+		double right = 0;
+		for (double i = x; i < y; i += ACC) {
+			left += ACC * this.getValueAt(i);
+		}
+
+		for (double i = x + ACC; i <= y; i += ACC) {
+			right += ACC * this.getValueAt(i);
+		}
+
+		return (left + right) / 2;
+	}
+
+	public double getValueAt(double x) {
 		double ret = 0;
-		for(double i = -1; i < 1; i += 0.1){
-			ret += 0.1 * (this.getValueAt(i) * v2.getValueAt(i));
+		for (int i = 0; i < koeffizienten.length; i++) {
+			ret += koeffizienten[i] * Math.pow(x, i);
 		}
 		return ret;
 	}
-	
-	@SuppressWarnings("unused")
-	private double getIntegral(){
-		double ret = 0;
-		for(double i = -1; i < 1; i += 0.1){
-			ret += 0.1 * this.getValueAt(i);
-		}
-		return ret;
-	}
-	
-	public double getValueAt(double x){
-		double ret = 0;
-		for(int i = 0; i < koeffizienten.length; i++){
-			ret += koeffizienten[i]*Math.pow(x, i);
-		}
-		return ret;
-	}
-	
-	public String toString(){
+
+	public String toString() {
 		String ret = "";
-		for(int i = 0; i < koeffizienten.length; i++){
+		for (int i = koeffizienten.length - 1; i >= 0; i--) {
 			ret += " + " + koeffizienten[i] + "x^" + i;
 		}
 		return ret;
