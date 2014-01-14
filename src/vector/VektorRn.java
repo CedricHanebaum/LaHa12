@@ -5,9 +5,7 @@ import java.util.ArrayList;
 /**
  * Speichert einen n Dimensionalen Vektor und stellt grundlegende
  * Rechenoperationen zur Verfügung.
- * 
  * @author chanebaum
- * 
  */
 
 public class VektorRn implements Vector {
@@ -17,9 +15,7 @@ public class VektorRn implements Vector {
 
 	/**
 	 * Erzeugt ein VektorRn Objekt mit beliebig vielen Elementen.
-	 * 
-	 * @param pVektor
-	 *            Elemente des Vektors
+	 * @param pVektor Elemente des Vektors
 	 */
 	public VektorRn(double... pVektor) {
 		vektor = pVektor;
@@ -32,12 +28,9 @@ public class VektorRn implements Vector {
 	/**
 	 * Addiert den uebergebenen Vektor zum this Vektor und gibt den
 	 * Ergebnisvektor zurueck.
-	 * 
-	 * @param v2
-	 *            addiert Vektor v2 zum this Vektor
+	 * @param v2 addiert Vektor v2 zum this Vektor
 	 * @return v2 + this
-	 * @throws RuntimeException
-	 *             falls Dimensionen nicht konsistent
+	 * @throws RuntimeException falls Dimensionen nicht konsistent
 	 */
 	public VektorRn add(Vector v2) {
 		VektorRn vr;
@@ -58,7 +51,6 @@ public class VektorRn implements Vector {
 
 	/**
 	 * bestimmt alle Senkrecht zum this Vektor stehenden Vektoren.
-	 * 
 	 * @return Array mit zum this Vektor senkrecht stehenden Vektoren.
 	 */
 	public VektorRn[] bestimmeSenkrechteVektoren() {
@@ -96,9 +88,7 @@ public class VektorRn implements Vector {
 	/**
 	 * Multipliziert den this Vektor mit einem Skalar und gibt den
 	 * Ergebnisvektor zurueck.
-	 * 
-	 * @param d
-	 *            Skalar, wird mit this Vektor multipiziert
+	 * @param d Skalar, wird mit this Vektor multipiziert
 	 * @return Produkt aus this und d
 	 */
 	public VektorRn mult(double d) {
@@ -111,12 +101,9 @@ public class VektorRn implements Vector {
 
 	/**
 	 * Prueft, ob der uebergebene Vektor parallel zum this Vektor ist.
-	 * 
-	 * @param v2
-	 *            Vektor, wird auf parallelität zu this Vektor geprüft
+	 * @param v2 Vektor, wird auf parallelität zu this Vektor geprüft
 	 * @return v2 parallel zu this Vektor
-	 * @throws RuntimeException
-	 *             falls Dimensionen nicht konsistent
+	 * @throws RuntimeException falls Dimensionen nicht konsistent
 	 */
 	public boolean isParallel(VektorRn v2) {
 		if (vektor.length != v2.vektor.length) throw new RuntimeException();
